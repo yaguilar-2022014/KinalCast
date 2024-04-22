@@ -1,25 +1,16 @@
-import {
-  emailValidationMessage,
-  validateEmail,
-  usernameValidationMessage,
-  validateUsername,
-  passwordValidationMessage,
-  validatePassword,
-  validatePasswordConfirm,
-  passwordConfirmValidationMessage
-} from "../shared/validators/input.validator.js"
+import { passConfirmationValidationMessage, validatePasswordConfirm } from "../shared/validators/confirmPass.validator.js"
+import { validateEmail,emailValidationMessage} from "../shared/validators/input.validator.js"
+import { passwordValidationMessage, validatePassword } from "../shared/validators/password.validator.js"
+import { usernameValidationMessage, validateUsername } from "../shared/validators/username.validator.js"
 import { Input } from "./Input.jsx"
 import { useState } from "react"
-import axios from "axios"
+import { useRegister } from "../shared/hooks/useRegister.jsx"
 
-export const Register = ({ switchAuthHandled }) => {
+export const Register = ({switchAuthHandler}) => {
 
-  //Código momentaneo
-    const apiURL = 'http://localhost:2656/twitch/v1/'
-  //----------------
+  const { register, isLoading } = useRegister()
 
-
-  const [formData, setformData] = useState(
+  const [formData, setFormData] = useState(
     {
       email: {
         value: '',
@@ -44,41 +35,37 @@ export const Register = ({ switchAuthHandled }) => {
     }
   )
 
-  const onValueChange = (value, field) => {
-    setformData((prevData) => (
-      {
-        ...prevData,
-        [field]: {
-          ...prevData[field],
-          value
+  const onValueChange = (value, field)=> {
+        setFormData((prevData)=>(
+        {
+          ...prevData,
+          [field]: {
+            ...prevData[field],
+            value
+          }
         }
-      }
-    ))
+      ))
   }
 
-  const handlerValidationOnBlur = (value, field) => {
+  const handleValidationOnBlur = (value, field)=>{
     let isValid = false
-    switch (field) {
+    switch(field) {
       case 'email':
         isValid = validateEmail(value)
-        break;
-
+        break
       case 'username':
         isValid = validateUsername(value)
-        break;
-
+        break
       case 'password':
         isValid = validatePassword(value)
-        break;
-
+        break
       case 'passwordConfirm':
         isValid = validatePasswordConfirm(formData.password.value, value)
-        break;
-
+        break
       default:
-        break;
+        break 
     }
-    setformData((prevData) => (
+    setFormData((prevData)=>(
       {
         ...prevData,
         [field]: {
@@ -89,85 +76,77 @@ export const Register = ({ switchAuthHandled }) => {
       }
     ))
   }
-  const handlerRegister = async (e) => {
-    //Codigo momentaneo
+
+  const handleRegister = async(e)=>{
     e.preventDefault()
-    const body = {
-      email: formData.email.value,
-      username: formData.username.value,
-      password: formData.password.value
-    }
-    try {
-      const {data} = await axios.post(`${apiURL}auth/register`,body)
-      console.log(data)
-    } catch (err) {
-      return{
-        error: true,
-        err
-      }
-    }
-    // -----------------
+    register(
+      formData.email.value,
+      formData.username.value,
+      formData.password.value
+    )
   }
-  const isSubmitButtonDisable = 
-        !formData.email.isValid ||
-        !formData.username.isValid ||
-        !formData.password.isValid ||
-        !formData.passwordConfirm.isValid
+
+  const isSubmitButtonDisable = !formData.email.isValid ||
+                                !formData.username.isValid ||
+                                !formData.password.isValid ||
+                                !formData.passwordConfirm.isValid
   return (
     <div className="register-container">
-      <form className="auth-form" onSubmit={handlerRegister}>
-        <Input
+      <form 
+        className="auth-form"
+        onSubmit={handleRegister}
+      >
+        <Input 
           field='email'
           label='Email'
+          type='email'
           value={formData.email.value}
           onChangeHandler={onValueChange}
-          onBlurHandler={handlerValidationOnBlur}
+          onBlurHandler={handleValidationOnBlur}
           showErrorMessage={formData.email.showError}
           validationMessage={emailValidationMessage}
         />
 
-        <br />
-        <Input
+        <Input 
           field='username'
           label='Username'
+          type='text'
           value={formData.username.value}
           onChangeHandler={onValueChange}
-          onBlurHandler={handlerValidationOnBlur}
+          onBlurHandler={handleValidationOnBlur}
           showErrorMessage={formData.username.showError}
           validationMessage={usernameValidationMessage}
         />
 
-        <br />
-        <Input
+        <Input 
           field='password'
           label='Password'
           type='password'
           value={formData.password.value}
           onChangeHandler={onValueChange}
-          onBlurHandler={handlerValidationOnBlur}
+          onBlurHandler={handleValidationOnBlur}
           showErrorMessage={formData.password.showError}
           validationMessage={passwordValidationMessage}
         />
 
-        <br />
-        <Input
+        <Input 
           field='passwordConfirm'
-          label='PasswordConfirm'
+          label='Password Confirmation'
           type='password'
           value={formData.passwordConfirm.value}
           onChangeHandler={onValueChange}
-          onBlurHandler={handlerValidationOnBlur}
+          onBlurHandler={handleValidationOnBlur}
           showErrorMessage={formData.passwordConfirm.showError}
-          validationMessage={passwordConfirmValidationMessage}
+          validationMessage={passConfirmationValidationMessage}
         />
-
-        <button disabled={isSubmitButtonDisable}>
+        <button
+          disabled={isSubmitButtonDisable}
+        >
           Register
         </button>
       </form>
-      <span className="auth-span-text" onClick={switchAuthHandled}>
-        ¿Ya tienes una Cuenta?<br />
-        <a href="https://www.google.com/?hl=es"><b>Inicia sesión aquí</b></a>
+      <span onClick={switchAuthHandler}>
+        ¿Ya tienes una cuenta? ¡Inicia sesión acá!
       </span>
     </div>
   )
