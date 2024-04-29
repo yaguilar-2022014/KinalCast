@@ -7,7 +7,7 @@
     ping_timeout: 60,
   },
   http: {
-    port: 80,
+    port: process.env.PORT1,
     allow_origin: "*",
   },
 };

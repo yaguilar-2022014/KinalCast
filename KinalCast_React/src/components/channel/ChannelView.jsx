@@ -1,7 +1,42 @@
-import React from 'react'
+import { ReactFlvPlayer } from "react-flv-player"
+import { useChannelDetails } from "../../shared/hooks/useChannelDetails"
+import { useEffect } from "react"
+import { useParams } from "react-router-dom"
+
+const stream = ({streamUrl})=>{
+  return(
+    <div className="channel-video-container">
+      <ReactFlvPlayer width='100%' heigth='100%' url={streamUrl}/>
+    </div>
+  )
+}
 
 export const ChannelView = () => {
+  const {channelDetails, isFetching, getChannelDetails}=useChannelDetails()
+  const {id} = useParams()
+  useEffect(()=>{
+    getChannelDetails(id)
+  },[])
+  if(isFetching){
+    return(
+      <div className="channel-offline-placeholder">
+        <span>Cargando...</span>
+      </div>
+    )
+  }
   return (
-    <div>ChannelView</div>
+    <div className="channel-container">
+      <div className="channel-video-description-section">
+        {
+          channelDetails.isOnline ? (
+            <stream streamUrl={channelDetails.streamUrl}/>
+          ):(
+            <div className="channel.offline.placeholder">
+              <span>Channel is Offline</span>
+            </div>
+          )
+        }
+      </div>
+    </div>
   )
 }

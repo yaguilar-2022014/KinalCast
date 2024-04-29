@@ -1,27 +1,28 @@
-import { useState } from "react"
-import toast from "react-hot-toast"
-import { getChannelsRequest } from "../../services/api.js"
+/* eslint-disable no-extra-boolean-cast */
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { getChannelsRequest } from "../../services/api.js";
 
 export const useChannels = () => {
-    const [channels, setchannels] = useState([])
+    const [channels, setChannels] = useState([])
+
     const getChannels = async(isLogged = false)=>{
         const channelsData = await getChannelsRequest()
-        console.log(channelsData)
 
         if(channelsData.error){
             return toast.error(
-                channelsData.err?.respone?.data ||
+                channelsData.err?.response?.data ||
                 'Error al obtener los canales'
             )
         }
         if(!isLogged){
-            return setchannels(
+            return setChannels(
                 {
                     channels: channelsData.data?.channels
                 }
             )
         }
-    }
+    } 
   return {
     getChannels,
     isFetching: !Boolean(channels),

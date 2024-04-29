@@ -1,6 +1,6 @@
-import { Toaster } from "react-hot-toast"
-import { useRoutes } from "react-router-dom"
-import { routes } from "./routes.jsx"
+import { Toaster } from 'react-hot-toast'
+import { useRoutes } from 'react-router-dom'
+import { routes } from './routes.jsx'
 
 function App() {
   const element = useRoutes(routes)
@@ -8,7 +8,7 @@ function App() {
   return (
     <>
      {element}
-     <Toaster position="bottom-right" reverseOrder={false}/>
+     <Toaster position='bottom-right' reverseOrder={false}/>
     </>
   )
 }

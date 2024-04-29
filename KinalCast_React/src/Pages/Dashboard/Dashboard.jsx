@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 export const Dashboard = () => {
   const { getChannels, isFetching, allChannels } = useChannels()
 
-  useEffect(() => {
+  useEffect(()=> {
     getChannels(false)
   }, [])
 
